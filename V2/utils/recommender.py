@@ -2,7 +2,7 @@
 import fastf1
 import pandas as pd
 
-fastf1.Cache.enable_cache('data/cache')
+fastf1.Cache.enable_cache('/Users/zanderbonnet/Desktop/GCU/Proj/f1_cache')
 
 def recommend_strategy(total_laps, weather='Dry', year=2024, gp='Monaco'):
     # Load the race session
@@ -53,3 +53,6 @@ def recommend_strategy(total_laps, weather='Dry', year=2024, gp='Monaco'):
             {"tire": "Medium", "laps": total_laps // 3},
             {"tire": "Hard", "laps": total_laps - 2 * (total_laps // 3)}
         ]
+
+t = recommend_strategy(95, weather='Dry', year=2024, gp='Monaco')
+print(t)

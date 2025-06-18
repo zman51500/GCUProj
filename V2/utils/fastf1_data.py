@@ -1,7 +1,7 @@
 
 import fastf1
 
-fastf1.Cache.enable_cache('data/cache')
+fastf1.Cache.enable_cache('/Users/zanderbonnet/Desktop/GCU/Proj/f1_cache')
 
 def get_driver_pace(year, gp, driver_code):
     session = fastf1.get_session(year, gp, 'R')
