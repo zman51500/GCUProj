@@ -53,6 +53,6 @@ for year in events:
 
         comp = pd.concat([comp, format_data(race, qualifying, e, year)], ignore_index=True)
 
-with open('f1_data.pkl', 'wb') as f:
+with open('./utils/f1_data.pkl', 'wb') as f:
     serialized = pickle.dumps(comp)
     f.write(serialized)
