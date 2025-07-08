@@ -1,7 +1,5 @@
 import fastf1
-import pandas as pd
 
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from utils.encoder import MultiHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -13,31 +11,33 @@ fastf1.Cache.enable_cache('/Users/zanderbonnet/Desktop/GCU/Proj/f1_cache')
 
 
 # Model pipeline setup
-catfeatures = ['Driver', 'Team', 'Compound', 'FreshTyre', 'PitLap', 'EventName', 'EventYear']
+catfeatures = ['Driver', 'Team', 'Compound', 'FreshTyre', 'PitLap', 'EventName', 'EventYear','Rainfall']
 status = ['TrackStatus']
-timefeat = ['LapTime_Qualifying']
+standard = ['LapTime_Qualifying', 'AirTemp', 'TrackTemp']
 numerical_features = ['TyreLife', 'LapNumber', 'LapTime', 'StartingPosition']
 
 preprocessor = ColumnTransformer(
     transformers=[
         ('cat', OneHotEncoder(), catfeatures),
         ('status', MultiHotEncoder(), status),
-        ('num', StandardScaler(), timefeat)
+        ('num', StandardScaler(), standard)
 
     ],
     remainder='passthrough'
 )
 
-model = Pipeline(steps=[
-    ('preprocessor', preprocessor),
-    ('regressor', XGBRegressor(
+clf = XGBRegressor(
         objective='reg:squarederror', 
         n_estimators=1000, 
         learning_rate = .1,
         max_depth=5,
         random_state=100
         )
-    )]
+
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', clf)
+    ]
 )
 with open('./utils/f1_data.pkl', 'rb') as f:
     comp = pickle.load(f)
@@ -45,9 +45,8 @@ with open('./utils/f1_data.pkl', 'rb') as f:
 #Train Model
 X = comp.drop(columns=['LapTime','DriverNumber'])
 y = comp['LapTime']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-model.fit(X_train, y_train)
+model.fit(X, y)
 
 dump(model, 'utils/lapprediction_model.joblib')
 

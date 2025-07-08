@@ -18,6 +18,7 @@ y25 = y25.iloc[np.where(
 
 #data formating function
 def format_data(race, qualifying,event_name, event_year):
+    data = pd.merge_asof(race.laps.sort_values('Time'), race.weather_data, left_on='Time', right_on='Time')
     race.laps['LapTime'] = race.laps['LapTime'].dt.total_seconds()
     qualifying.laps['LapTime'] = qualifying.laps['LapTime'].dt.total_seconds()
 
@@ -25,7 +26,8 @@ def format_data(race, qualifying,event_name, event_year):
     pitlap = race.laps['PitOutTime'].notna()
     pits = pitlap.rename('PitLap', inplace=True)
 
-    data = race.laps[['Driver','DriverNumber','Team','LapTime','Compound','FreshTyre','TyreLife', 'LapNumber','TrackStatus']]
+    data = race.laps[['Time','Driver','DriverNumber','Team','LapTime','Compound','FreshTyre',
+                      'TyreLife', 'LapNumber','TrackStatus']]
     starting_pos = race.results[['DriverNumber','GridPosition']]
     data['StartingPosition'] = data.merge(starting_pos, on = 'DriverNumber', how='left')['GridPosition']
     data['TrackStatus']=[list(x) for x in data['TrackStatus']]
@@ -34,6 +36,8 @@ def format_data(race, qualifying,event_name, event_year):
     data['EventYear'] = event_year
     data['EventName'] = event_name
     data = data.merge(fastest_laps, on='Driver', suffixes=('', '_Qualifying'))
+    data = pd.merge_asof(data.sort_values('Time'), race.weather_data[['Time', 'Rainfall', 'TrackTemp', 'AirTemp']], left_on='Time', right_on='Time')
+    data.drop(columns = ['Time'], inplace=True)
     data = data.dropna()
     data = pd.DataFrame(data)
     return(data)
@@ -46,7 +50,7 @@ events = dict(zip([2023,2024,2025], [y23, y24, y25]))
 for year in events:
     for e in events[year]:
         race = fastf1.get_session(year, e, 'R')
-        race.load(laps=True, telemetry=False, weather=False, messages=False)
+        race.load(laps=True, telemetry=False, weather=True, messages=False)
 
         qualifying = fastf1.get_session(year, e, 'Q')
         qualifying.load(laps=True, telemetry=False, weather=False, messages=False)

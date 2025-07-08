@@ -26,22 +26,22 @@ model_path = os.path.join(os.path.dirname(__file__), 'utils', 'lapprediction_mod
 model = load(model_path)
 
 # --- Streamlit App ---
-st.set_page_config(page_title="F1 Tire Strategy Predictor", layout="centered")
+st.set_page_config(page_title="Strat1", layout="centered")
 
-st.title("🏎️ Formula 1 Tire Strategy Lap Time Predictor")
 
+st.sidebar.title("🏁 Strat1 - Race Strategy Prediction 🏎️")
 st.sidebar.header("Race Setup")
 race = st.sidebar.selectbox('Select Race',options=races)
-qual = st.sidebar.number_input("Qualifying Lap Time (s)", min_value=60, max_value=120, value=90),
+qual = st.sidebar.number_input("Qualifying Lap Time (s)",step=.01, value = 90.00),
 start = st.sidebar.number_input("Starting Position", min_value=1, max_value=20, value=1)
 total_laps = st.sidebar.number_input("Total Race Laps", min_value=1, max_value=100, value=58)
-num_stints = st.sidebar.slider("Number of Tire Stints", min_value=1, max_value=5, value=3)
+rain = st.sidebar.checkbox("Rain Expected", value=False, help="Check if rain is expected during the Race")
+num_stints = st.sidebar.slider("Number of Tire Stints", min_value=2, max_value=5, value=2)
 st.sidebar.markdown("### Team and Driver Selection")
 team = st.sidebar.selectbox("Select Team", options=teams)
 driver = st.sidebar.selectbox("Select Driver", options=drivers[team])
 
-st.header("🛠️ Input Tire Strategy")
-st.markdown("Use the dropdown menus and lap ranges to define each tire stint.")
+st.header("🛠️ Input Tire Strategy", help = "Use the dropdown menus and lap ranges to define each tire stint.")
 
 strategy = []
 prev_end = 0
@@ -54,14 +54,20 @@ df = pd.DataFrame(columns=['Driver', 'Team', 'Compound', 'FreshTyre', 'PitLap', 
 lap = 1
 for i in range(num_stints):
     st.subheader(f"Stint {i+1}")
-    start_lap = st.number_input(f"Start Lap (Stint {i+1})", min_value=1, max_value=total_laps, value=prev_end + 1, key=f'start_{i}')
+    if i == 0:
+        start = 1
+    else:
+        start = prev_end + 1
+    start_lap = st.number_input(f"Start Lap (Stint {i+1})",value = start, key=f'start_{i}', disabled=True)
     if i+1 == num_stints:
         end = total_laps
     else:
         end = min(start_lap + 25, total_laps)
-    end_lap = st.number_input(f"End Lap (Stint {i+1})", min_value=start_lap + 1, max_value=total_laps,
+    end_lap = st.number_input(f"End Lap (Stint {i+1})", min_value=start_lap, max_value=total_laps,
                                value=end, key=f'end_{i}')
-    compound = st.selectbox(f"Tire Compound (Stint {i+1})", compound_options, key=f'compound_{i}')
+    compound = st.selectbox(f"Tire Compound (Stint {i+1})", compound_options ,key=f'compound_{i}',
+                            placeholder='Select Compound',
+                            help='Select the tire compound for this stint. Options: SOFT, MEDIUM, HARD, INTERMEDIATE, WET')
 
     for i in range(1, end_lap - start_lap + 2):
         new = {
@@ -76,7 +82,10 @@ for i in range(num_stints):
             'LapTime_Qualifying': float(qual[0]),
             'TyreLife': int(i),
             'LapNumber': int(lap),
-            'StartingPosition': int(start)
+            'StartingPosition': int(start),
+            'Rainfall': rain,
+            'AirTemp': 25.0,  # Placeholder value
+            'TrackTemp': 30.0  # Placeholder value
         }
 
         df = pd.concat([df,pd.DataFrame([new])], ignore_index=True)
@@ -105,7 +114,10 @@ else:
     st.success(f'Total Time: {pred.sum():.2f} seconds')
     
     show = pd.DataFrame({
+        'LapNumber': df['LapNumber'],
+        'Compound': df['Compound'],
         'LapTime': pred,
-    }, index=df['LapNumber'])
+    })
 
-    st.line_chart(show)
+    st.line_chart(show, use_container_width=True, height=400,
+                   x = 'LapNumber',y='LapTime')
