@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-from utils.encoder import MultiHotEncoder
+import sklearn
+#from utils.encoder import MultiHotEncoder
 import pickle
 import fastf1
 races = list(fastf1.get_event_schedule(2025,include_testing=False)['EventName'])
