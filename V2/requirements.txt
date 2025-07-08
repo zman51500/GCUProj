@@ -1,5 +1,6 @@
 fastf1
 pandas
+os
 numpy
 matplotlib
 scikit-learn
