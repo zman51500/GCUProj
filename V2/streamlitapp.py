@@ -22,23 +22,6 @@ drivers = {
 
 model = pickle.load(open('utils/lapprediction_model.pkl', 'rb'))
 
-
-def predict_lap_times(strategy):
-    """
-    Mock prediction: base time + compound adjustment + stint penalty.
-    Replace this with your real ML model.
-    """
-    lap_times = []
-    for stint in strategy:
-        start, end, compound = stint['start_lap'], stint['end_lap'], stint['compound']
-        for lap in range(start, end + 1):
-            base_time = 90  # base lap time in seconds
-            compound_penalty = {'SOFT': 0, 'MEDIUM': 1.5, 'HARD': 3.0}[compound]
-            tire_wear_penalty = (lap - start) * 0.2  # gets slower per lap
-            lap_time = base_time + compound_penalty + tire_wear_penalty
-            lap_times.append({'Lap': lap, 'Compound': compound, 'Predicted Lap Time (s)': round(lap_time, 2)})
-    return lap_times
-
 # --- Streamlit App ---
 st.set_page_config(page_title="F1 Tire Strategy Predictor", layout="centered")
 
