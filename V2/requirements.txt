@@ -2,3 +2,6 @@ streamlit
 scikit-learn
 numpy
 pandas
+fastf1
+pickle
+xgboost
