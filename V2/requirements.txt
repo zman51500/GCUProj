@@ -1,5 +1,6 @@
 fastf1
 pandas
+pickle
 numpy
 matplotlib
 scikit-learn
