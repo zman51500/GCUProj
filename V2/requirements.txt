@@ -1,7 +1,8 @@
-streamlit
-pandasnumpy
+fastf1
+pandas
+numpy
 matplotlib
 scikit-learn
-fastf1
 pickle
 xgboost
+streamlit
