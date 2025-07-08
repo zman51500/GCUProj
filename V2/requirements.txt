@@ -1,7 +1,7 @@
-fastf1
+fastf1==3.5.3
 pandas
 numpy
-matplotlib
-scikit-learn
-xgboost
+scikit-learn==1.6.1
+xgboost==3.0.0
 streamlit
+joblib

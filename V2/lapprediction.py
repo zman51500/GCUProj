@@ -1,11 +1,13 @@
 import fastf1
 import pandas as pd
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from utils.encoder import MultiHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
+from joblib import dump
 import pickle
 fastf1.Cache.enable_cache('/Users/zanderbonnet/Desktop/GCU/Proj/f1_cache')
 
@@ -47,7 +49,5 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 model.fit(X_train, y_train)
 
-with open('./utils/lapprediction_model.pkl', 'wb') as f:
-    serialized = pickle.dumps(model)
-    f.write(serialized)
+dump(model, 'utils/lapprediction_model.joblib')
 

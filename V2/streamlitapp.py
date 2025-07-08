@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import fastf1
 import os
+from joblib import load
 races = list(fastf1.get_event_schedule(2025,include_testing=False)['EventName'])
 teams = ['Red Bull Racing', 'Alpine', 'Mercedes', 'Aston Martin', 'Ferrari',
         'Racing Bulls', 'Williams', 'Kick Sauber', 'Haas F1 Team',
@@ -21,12 +22,8 @@ drivers = {
     'Alpine': ['GAS','COL']
 }
 
-
-current_dir = os.path.dirname(__file__)
-model_path = os.path.join(current_dir, 'utils', 'lapprediction_model.pkl')
-
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
+model_path = os.path.join(os.path.dirname(__file__), 'utils', 'lapprediction_model.joblib')
+model = load(model_path)
 
 # --- Streamlit App ---
 st.set_page_config(page_title="F1 Tire Strategy Predictor", layout="centered")
