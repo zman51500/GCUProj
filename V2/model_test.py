@@ -3,10 +3,10 @@ from sklearn.metrics import root_mean_squared_error
 from utils.encoder import MultiHotEncoder
 
 
-with open('lapprediction_model.pkl', 'rb') as f:
+with open('utils/lapprediction_model.pkl', 'rb') as f:
     model = pickle.load(f)
 
-with open('f1_data.pkl', 'rb') as f:
+with open('utils/f1_data.pkl', 'rb') as f:
     comp = pickle.load(f)
 
 
@@ -22,5 +22,3 @@ for d in X['Driver'].unique():
     se = (y[X['Driver'] == d] - pred ).mean()
     RMSE = root_mean_squared_error(pred, y[X['Driver'] == d].values)
     print(f'Driver {d} RMSE: {RMSE:.3f} || SE: {se:.3f}')
-
-print(X.dtypes)
