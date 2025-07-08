@@ -47,7 +47,7 @@ def recommend_strategy(total_laps, weather='Dry', year=2024, gp='Monaco'):
     if strategies:
         return strategies[0]
     else:
-        # Fallback to heuristic
+        # Fallback to base stratagy
         return [
             {"tire": "Soft", "laps": total_laps // 3},
             {"tire": "Medium", "laps": total_laps // 3},
