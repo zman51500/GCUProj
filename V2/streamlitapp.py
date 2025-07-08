@@ -20,8 +20,8 @@ drivers = {
     'Alpine': ['GAS','COL']
 }
 
-with open('lapprediction_model.pkl', 'rb') as f:
-    model = pickle.load(f)
+#with open('utils/lapprediction_model.pkl', 'rb') as f:
+model = pickle.load(open('utils/lapprediction_model.pkl', 'rb'))
 
 
 def predict_lap_times(strategy):

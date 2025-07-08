@@ -37,7 +37,7 @@ model = Pipeline(steps=[
         )
     )]
 )
-with open('f1_data.pkl', 'rb') as f:
+with open('./utils/f1_data.pkl', 'rb') as f:
     comp = pickle.load(f)
 
 #Train Model
@@ -47,7 +47,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 model.fit(X_train, y_train)
 
-with open('lapprediction_model.pkl', 'wb') as f:
+with open('./utils/lapprediction_model.pkl', 'wb') as f:
     serialized = pickle.dumps(model)
     f.write(serialized)
 
