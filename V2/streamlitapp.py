@@ -20,7 +20,6 @@ drivers = {
     'Alpine': ['GAS','COL']
 }
 
-
 with open('lapprediction_model.pkl', 'rb') as f:
     model = pickle.load(f)
 
