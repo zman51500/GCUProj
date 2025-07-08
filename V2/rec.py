@@ -5,9 +5,10 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 
 
-def generate_strategies(total_laps, compounds, min_stints=2, max_stints=4, max_strategies=500, rain=False):
+def generate_strategies(total_laps, compounds, min_stints=2, max_stints=4, max_strategies=1500, rain=False, fixed_stints=None):
     strategies = []
-    for stint_count in range(min_stints, max_stints + 1):
+    stint_range = [fixed_stints] if fixed_stints else range(min_stints, max_stints + 1)
+    for stint_count in stint_range:
         for splits in combinations(range(2, total_laps), stint_count - 1):
             stints = [0] + list(splits) + [total_laps]
             stint_lengths = [stints[i+1] - stints[i] for i in range(len(stints)-1)]
@@ -59,13 +60,13 @@ def evaluate_strategy(model, strategy, driver, team, race, qual_time, start_pos,
         return np.inf, strategy, None
 
 
-def find_best_strategy(model, driver, team, race, qual_time, start_pos, rain, total_laps):
+def find_best_strategy(model, driver, team, race, qual_time, start_pos, rain, total_laps, num_stints=None):
     if rain:
         compounds = ['INTERMEDIATE', 'WET']
     else:
         compounds = ['SOFT', 'MEDIUM', 'HARD']
 
-    strategies = generate_strategies(total_laps, compounds, rain=rain)
+    strategies = generate_strategies(total_laps, compounds, rain=rain, fixed_stints=num_stints)
 
     results = []
     for result in tqdm(Parallel(n_jobs=-1)(
@@ -91,5 +92,3 @@ def find_best_strategy(model, driver, team, race, qual_time, start_pos, rain, to
             break  # Top 3
 
     return best_strategy, best_time, best_df, top_strategies
-
-

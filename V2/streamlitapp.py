@@ -88,7 +88,8 @@ if st.button("🔍 Recommend Optimal Strategy"):
             qual_time=qual,
             start_pos=start,
             rain=rain,
-            total_laps=total_laps
+            total_laps=total_laps,
+            num_stints=num_stints
         )
 
     if best_df is not None:
