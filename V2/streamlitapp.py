@@ -16,7 +16,7 @@ drivers = {
     'Kick Sauber': ['HUL', 'BOR'],
     'Racing Bulls': ['LAW','HAD'],
     'Aston Martin': ['ALO','STR'],
-    'Haas': ['OCO','BEA'],
+    'Haas F1 Team': ['OCO','BEA'],
     'Alpine': ['GAS','COL']
 }
 
