@@ -29,8 +29,8 @@ preprocessor = ColumnTransformer(
 clf = XGBRegressor(
         objective='reg:squarederror', 
         n_estimators=1000, 
-        learning_rate = .1,
-        max_depth=5,
+        learning_rate = .2,
+        max_depth=7,
         random_state=100
         )
 

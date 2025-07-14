@@ -59,9 +59,9 @@ st.sidebar.title("🏁 Strat1 - Race Strategy Prediction 🏎️")
 st.sidebar.header("Race Setup")
 
 race = st.sidebar.selectbox('Select Race', options=races)
-qual = st.sidebar.number_input("Qualifying Lap Time (s)", step=0.01, value=90.00)
+qual = st.sidebar.number_input("Qualifying Lap Time (s)", step=0.01, value=75.00)
 start = st.sidebar.number_input("Starting Position", min_value=1, max_value=20, value=1)
-total_laps = st.sidebar.number_input("Total Race Laps", min_value=1, max_value=100, value=58)
+total_laps = st.sidebar.number_input("Total Race Laps", min_value=2, max_value=100, value=57)
 rain = st.sidebar.checkbox("Rain Expected", value=False, help="Check if rain is expected during the Race")
 
 # Use session_state.num_stints for the slider's value and control disabling
@@ -113,6 +113,10 @@ strategy_df = pd.DataFrame()
 prev_end = 0
 lap = 1
 
+# Automatically divide laps evenly among stints if needed
+base_stint_length = total_laps // num_stints
+extra_laps = total_laps % num_stints
+
 for i in range(num_stints):
     st.subheader(f"Stint {i+1}")
 
@@ -121,20 +125,22 @@ for i in range(num_stints):
     else:
         stint_start = prev_end + 1
 
-    # Prefill from recommended strategy if available
     if st.session_state.recommended_strategy and i < len(st.session_state.recommended_strategy):
         default_compound, default_length = st.session_state.recommended_strategy[i]
         default_end = stint_start + default_length - 1
     else:
         default_compound = None
-        if i == num_stints - 1:
-            default_end = total_laps
-        else:
-            default_end = min(stint_start + 25, total_laps)
+        default_length = base_stint_length + (1 if i < extra_laps else 0)
+        default_end = stint_start + default_length - 1
+
+    # Adjust if stint end exceeds total_laps
+    if default_end > total_laps:
+        default_end = total_laps
 
     if stint_start > total_laps:
-        st.error(f"🚫 Start lap cannot be greater than total laps: {stint_start}")
+        st.warning(f"⚠️ Stint {i+1} starts after the total number of race laps. Reduce the number of stints.")
         break
+
     start_lap = st.number_input(f"Start Lap (Stint {i+1})", value=stint_start, key=f'start_{i}', disabled=True)
     end_lap = st.number_input(
         f"End Lap (Stint {i+1})",
@@ -147,7 +153,7 @@ for i in range(num_stints):
     compound = st.selectbox(
         f"Tire Compound (Stint {i+1})",
         compound_options,
-        index=compound_options.index(default_compound) if default_compound else 0,
+        index=compound_options.index(default_compound) if default_compound else i % 2,
         key=f'compound_{i}'
     )
 
@@ -179,9 +185,11 @@ for i in range(num_stints):
 last_lap = lap - 1
 
 if last_lap < total_laps:
-    st.warning(f"⚠️ Total laps entered ({last_lap}) are less than race laps ({total_laps}). Add more stints.")
+    st.warning(f"⚠️ Total laps entered ({last_lap}) are less than race laps ({total_laps}). Add more stints or laps.")
 elif last_lap > total_laps:
-    st.error(f"🚫 Stint lap range exceeds total race laps ({total_laps}). Adjust your strategy.")
+    st.error(f"❌ Stint lap range exceeds total race laps ({total_laps}). Adjust your strategy.")
+elif not rain and len(set(strategy_df['Compound'])) < 2:
+    st.warning("⚠️ At least 2 different compounds are required in dry weather. Adjust your strategy ")
 else:
     pred = model.predict(strategy_df)
     st.success("✅ Strategy accepted. Showing predicted lap times.")

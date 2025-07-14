@@ -65,3 +65,5 @@ for year in events:
 with open('./utils/f1_data.pkl', 'wb') as f:
     serialized = pickle.dumps(comp)
     f.write(serialized)
+
+comp.to_csv('f1data.csv', index = False)
