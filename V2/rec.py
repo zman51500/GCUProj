@@ -6,19 +6,24 @@ from tqdm import tqdm
 
 
 def generate_strategies(total_laps, compounds, min_stints=2, max_stints=4, max_strategies=1500, rain=False, fixed_stints=None):
+    def create_strategy(stints, stint_lengths, compounds, rain):
+        strategies = []
+        for comp in product(set(compounds), repeat=len(stints) - 1):
+            if not rain and len(set(comp)) < 2:
+                continue  # Require at least two different compounds for dry races
+            strategy = list(zip(comp, stint_lengths))
+            strategies.append(strategy)
+        return strategies
+
     strategies = []
     stint_range = [fixed_stints] if fixed_stints else range(min_stints, max_stints + 1)
     for stint_count in stint_range:
         for splits in combinations(range(2, total_laps), stint_count - 1):
             stints = [0] + list(splits) + [total_laps]
             stint_lengths = [stints[i+1] - stints[i] for i in range(len(stints)-1)]
-            for comp in product(set(compounds), repeat=stint_count):
-                if not rain and len(set(comp)) < 2:
-                    continue  # Require at least two different compounds for dry races
-                strategy = list(zip(comp, stint_lengths))
-                strategies.append(strategy)
-                if len(strategies) >= max_strategies:
-                    return strategies
+            strategies.extend(create_strategy(stints, stint_lengths, compounds, rain))
+            if len(strategies) >= max_strategies:
+                return strategies[:max_strategies]
     return strategies
 
 
