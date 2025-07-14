@@ -10,9 +10,13 @@ model = load('utils/lapprediction_model.joblib')
 with open('utils/f1_data.pkl', 'rb') as f:
     comp = pickle.load(f)
 
+comp = comp[['Driver', 'Team', 'Compound', 'FreshTyre', 'PitLap', 'EventName', 'EventYear','Rainfall',
+             'TrackStatus', 'LapTime_Qualifying', 'AirTemp', 'TrackTemp', 'TyreLife', 'LapNumber',
+               'LapTime', 'StartingPosition','Position']]
+comp = comp.dropna()
 
 #Evaluate Model
-X = comp.drop(columns=['LapTime', 'DriverNumber'])
+X = comp.drop(columns=['LapTime'])
 y = comp['LapTime']
 pred = model.predict(X)
 rmse = root_mean_squared_error(y, pred)

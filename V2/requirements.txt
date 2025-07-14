@@ -6,3 +6,4 @@ xgboost==3.0.0
 streamlit
 joblib
 tqdm
+plotly.express

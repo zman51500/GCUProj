@@ -27,9 +27,15 @@ def format_data(race, qualifying,event_name, event_year):
     pits = pitlap.rename('PitLap', inplace=True)
 
     data = race.laps[['Time','Driver','DriverNumber','Team','LapTime','Compound','FreshTyre',
-                      'TyreLife', 'LapNumber','TrackStatus']]
-    starting_pos = race.results[['DriverNumber','GridPosition']]
+                      'TyreLife', 'LapNumber','TrackStatus','Position']]
+    starting_pos = race.results[['DriverNumber','GridPosition','Points','ClassifiedPosition']]
     data['StartingPosition'] = data.merge(starting_pos, on = 'DriverNumber', how='left')['GridPosition']
+    data['Points'] = data.merge(starting_pos, on = 'DriverNumber', how='left')['Points']
+    data['ClassifiedPosition'] = data.merge(starting_pos, on = 'DriverNumber', how='left')['ClassifiedPosition']
+    data['Driver'] = data['Driver'].astype(str)
+    data['Team'] = data['Team'].astype(str)
+    data['Compound'] = data['Compound'].astype(str)
+    data['FreshTyre'] = data['FreshTyre'].astype(bool)
     data['TrackStatus']=[list(x) for x in data['TrackStatus']]
     data = data.merge(pits, left_index=True, right_index=True)
     fastest_laps = qualifying.laps.groupby('Driver')['LapTime'].min().reset_index()
@@ -38,7 +44,6 @@ def format_data(race, qualifying,event_name, event_year):
     data = data.merge(fastest_laps, on='Driver', suffixes=('', '_Qualifying'))
     data = pd.merge_asof(data.sort_values('Time'), race.weather_data[['Time', 'Rainfall', 'TrackTemp', 'AirTemp']], left_on='Time', right_on='Time')
     data.drop(columns = ['Time'], inplace=True)
-    data = data.dropna()
     data = pd.DataFrame(data)
     return(data)
     

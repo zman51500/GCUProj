@@ -14,7 +14,7 @@ fastf1.Cache.enable_cache('/Users/zanderbonnet/Desktop/GCU/Proj/f1_cache')
 catfeatures = ['Driver', 'Team', 'Compound', 'FreshTyre', 'PitLap', 'EventName', 'EventYear','Rainfall']
 status = ['TrackStatus']
 standard = ['LapTime_Qualifying', 'AirTemp', 'TrackTemp']
-numerical_features = ['TyreLife', 'LapNumber', 'LapTime', 'StartingPosition']
+numerical_features = ['TyreLife', 'LapNumber', 'LapTime', 'StartingPosition','Position']
 
 preprocessor = ColumnTransformer(
     transformers=[
@@ -41,9 +41,13 @@ model = Pipeline(steps=[
 )
 with open('./utils/f1_data.pkl', 'rb') as f:
     comp = pickle.load(f)
+comp = comp[['Driver', 'Team', 'Compound', 'FreshTyre', 'PitLap', 'EventName', 'EventYear','Rainfall',
+             'TrackStatus', 'LapTime_Qualifying', 'AirTemp', 'TrackTemp', 'TyreLife', 'LapNumber',
+               'LapTime', 'StartingPosition','Position']]
+comp = comp.dropna()
 
 #Train Model
-X = comp.drop(columns=['LapTime','DriverNumber'])
+X = comp.drop(columns=['LapTime'])
 y = comp['LapTime']
 
 model.fit(X, y)
