@@ -42,7 +42,8 @@ def build_strategy_df(strategy, driver, team, race, qual_time, start_pos, rain, 
                 'StartingPosition': start_pos,
                 'Rainfall': rain,
                 'AirTemp': 25.0,
-                'TrackTemp': 30.0
+                'TrackTemp': 30.0,
+                'Position': start_pos
             }
             df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
             lap += 1
@@ -85,7 +86,7 @@ def find_best_strategy(model, driver, team, race, qual_time, start_pos, rain, to
     seen_strategies = []
     for total_time, strategy, df in valid_results:
         simplified = [(c, l) for c, l in strategy]
-        if not any(sum(abs(a[1] - b[1]) for a, b in zip(simplified, seen)) < 11 and [a[0] for a in simplified] == [b[0] for b in seen] for seen in seen_strategies):
+        if not any(sum(abs(a[1] - b[1]) for a, b in zip(simplified, seen)) < 20 and [a[0] for a in simplified] == [b[0] for b in seen] for seen in seen_strategies):
             top_strategies.append((total_time, strategy, df))
             seen_strategies.append(simplified)
         if len(top_strategies) >= 3:

@@ -64,7 +64,7 @@ with open(os.path.join(os.path.dirname(__file__).replace('pages',''), 'utils', '
 
     def gen_lap_time_chart(df):
         fig = px.scatter(df, x='LapNumber', y='LapTime', color='Driver',
-                         hover_data=['Compound'],
+                         hover_data=['Compound', 'PitLap'],
                          title=f"{event_title} F1 Lap Time Chart")
         fig.update_traces(mode='lines+markers')
         fig.update_layout(paper_bgcolor='black', font_color='#7FDBFF',
