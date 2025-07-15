@@ -294,7 +294,7 @@ See `requirements.txt` for complete list:
 
 ## 📄 License
 
-FastF1 is licensed under the MIT License - see the LICENSE file for details.
+FastF1 is licensed under the MIT License
 
 ## 🏎️ Acknowledgments
 
