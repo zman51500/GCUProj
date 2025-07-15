@@ -341,7 +341,7 @@ def add_enhanced_features_to_dataframe(df: pd.DataFrame, total_laps: int) -> pd.
         axis=1
     )
     
-    # Fuel load effect - SAME AS REC.PY
+    # Fuel load effect 
     df['FuelLoad'] = (total_laps - df['LapNumber'] + 1) * 1.8  # Assuming 1.8 kg/lap fuel consumption
     df['FuelEffect'] = df['FuelLoad'] * 0.035
     
@@ -356,10 +356,10 @@ def add_enhanced_features_to_dataframe(df: pd.DataFrame, total_laps: int) -> pd.
     min_qual_time = df['LapTime_Qualifying'].min()
     df['QualifyingGap'] = df['LapTime_Qualifying'] - min_qual_time
     
-    # Stint features - UPDATED TO MATCH REC.PY LOGIC
+    # Stint features
     df['StintPosition'] = df['TyreLife']
     
-    # Calculate stint lengths dynamically like rec.py
+    # Calculate stint lengths dynamically
     stint_lengths = []
     current_stint_length = 0
     
