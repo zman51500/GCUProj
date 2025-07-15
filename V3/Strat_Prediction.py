@@ -117,6 +117,8 @@ def render_sidebar() -> Dict:
             "Qualifying Lap Time (s)", 
             step=0.01, 
             value=75.00,
+            min_value=55.0,
+            max_value=120.0,
             help="Best qualifying lap time for reference"
         ),
         'start_pos': st.sidebar.number_input(
@@ -141,7 +143,7 @@ def render_sidebar() -> Dict:
         max_value=5,
         value=st.session_state.num_stints,
         disabled=slider_disabled,
-        help="Number of tire changes + 1"
+        help="Number of tire changes + 1. If not able to adjust, reset the strategy first."
     )
     
     # Pit Stop Configuration

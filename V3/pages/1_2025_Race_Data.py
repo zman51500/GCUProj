@@ -114,10 +114,6 @@ def create_enhanced_results_table(results_df, laps_df):
     
     pit_stops_df = pd.DataFrame(pit_stops_data).set_index('Driver')['Pit Stops']
     
-    # DEBUG: Print pit stop counts for verification
-    print("DEBUG: Calculated pit stops per driver:")
-    for driver, count in pit_stops_df.items():
-        print(f"  {driver}: {count} pit stops")
     
     # Combine all data
     enhanced_results = results_df.set_index('Driver').join([fastest_lap, avg_lap, pit_stops_df], how='left')
