@@ -26,8 +26,8 @@ class StrategyConfig:
     total_laps: int
     compounds: List[str]
     min_stints: int = 2
-    max_stints: int = 4  # Reduced from 5 to 4
-    max_strategies: int = 2000  # Reduced for better performance
+    max_stints: int = 4 
+    max_strategies: int = 2000  
     rain: bool = False
     fixed_stints: Optional[int] = None
     pit_window_start: int = 3  # Earliest pit stop lap
@@ -52,11 +52,12 @@ class EnhancedFeatureBuilder:
     
     def __init__(self):
         self.compound_degradation_rates = {
-            'SOFT': 0.05,
+            #Base degradation rates for each compound
+            'SOFT': 0.05, # Higher degradation for soft tires
             'MEDIUM': 0.03,
             'HARD': 0.02,
             'INTERMEDIATE': 0.02,
-            'WET': 0.01
+            'WET': 0.01 # Minimal degradation for wet tires
         }
     
     def add_enhanced_features(self, df: pd.DataFrame, total_laps: int) -> pd.DataFrame:
@@ -338,7 +339,7 @@ class SimplifiedStrategyGenerator:
         
         # Check compound requirements for dry races
         if not self.config.rain:
-            compounds_used = set(stint[0] for stint in strategy)
+            compounds_used = {stint[0] for stint in strategy}
             if len(compounds_used) < 2:
                 return False
         

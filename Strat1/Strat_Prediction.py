@@ -1,5 +1,5 @@
 """
-F1 Strategy Prediction Streamlit App - Enhanced
+F1 Strategy Prediction Streamlit App
 
 This application provides an interactive interface for F1 tire strategy optimization.
 Users can input race parameters and get optimal tire strategy recommendations with enhanced features.
@@ -394,7 +394,7 @@ def add_enhanced_features_to_dataframe(df: pd.DataFrame, total_laps: int) -> pd.
     return df
 
 
-def build_stint_dataframe(stint_data: Dict, lap_counter: int, total_laps: int) -> tuple:
+def build_stint_dataframe(stint_data: Dict, lap_counter: int) -> tuple:
     """Build dataframe rows for a single stint with enhanced features."""
     rows = []
     stint_length = stint_data['end_lap'] - stint_data['start_lap'] + 1
@@ -506,7 +506,7 @@ def render_manual_strategy_input(config: Dict) -> Optional[pd.DataFrame]:
         }
         
         # Build dataframe for this stint
-        stint_rows, current_lap = build_stint_dataframe(stint_data, current_lap, config['total_laps'])
+        stint_rows, current_lap = build_stint_dataframe(stint_data, current_lap)
         stint_df = pd.DataFrame(stint_rows)
         strategy_df = pd.concat([strategy_df, stint_df], ignore_index=True)
         
@@ -558,11 +558,10 @@ def validate_and_predict_strategy(model, strategy_df: pd.DataFrame, config: Dict
         pit_stop_time = config['pit_stop_time']  # Use adjustable pit stop time
         total_pit_time = num_pit_stops * pit_stop_time
         
-        # Calculate total times to match rec.py exactly
+        # Calculate total times
         pure_lap_time_total = predictions.sum()
         total_time_with_pits = pure_lap_time_total + total_pit_time
         avg_lap_time = predictions.mean()
-        fuel_corrected_total = (predictions + strategy_df['FuelEffect']).sum()
         
         st.success("✅ Strategy accepted. Showing predicted lap times.")
         
