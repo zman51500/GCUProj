@@ -13,7 +13,7 @@ An advanced Formula 1 tire strategy optimization and race analysis platform buil
 - **AI-Powered Predictions**: Advanced XGBoost model trained on historical F1 data
 - **Real-Time Strategy Generation**: Generate optimal tire strategies for any race scenario
 - **Customizable Parameters**: Adjust pit stop times, weather conditions, and race parameters
-- **Multiple Strategy Options**: Compare top 5 strategies with detailed analysis
+- **Multiple Strategy Options**: Compare top strategies with detailed analysis
 
 ### 📊 Race Analysis
 - **2025 Season Data**: Complete race analysis for finished F1 races
@@ -43,7 +43,7 @@ cd GCUProj/V3
 
 2. **Install dependencies**
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 3. **Set up F1 data cache** (optional but recommended)
@@ -60,7 +60,7 @@ streamlit run Strat_Prediction.py
 ```
 
 2. **Access the application**
-   - Open your browser to `http://localhost:8501`
+   - Open your browser to `https://zman51500-gcuproj-strat1strat-prediction-bu8jhu.streamlit.app/`
    - The main strategy prediction interface will load
 
 3. **Navigate between pages**
@@ -70,7 +70,7 @@ streamlit run Strat_Prediction.py
 ## 📁 Project Structure
 
 ```
-V3/
+Strat1/
 ├── Strat_Prediction.py          # Main Streamlit application
 ├── lapprediction.py             # ML model training and feature engineering
 ├── rec.py                       # Strategy recommendation engine
@@ -128,13 +128,13 @@ V3/
 ### Model Training
 ```bash
 # Train new model with latest data
-python lapprediction.py
+python3 lapprediction.py
 ```
 
 ### Model Testing
 ```bash
 # Run comprehensive model validation
-python utils/test.py
+python3 utils/test.py
 ```
 
 ### Features Used
@@ -200,9 +200,9 @@ best_strategy, best_time, best_df, top_strategies = find_best_strategy(
 ## 📊 Performance Metrics
 
 ### Model Accuracy
-- **RMSE**: ~0.3-0.8 seconds lap time prediction
-- **MAE**: ~0.2-0.6 seconds average error
-- **R²**: 0.85-0.95 correlation with actual lap times
+- **RMSE**: ~0.6-1.5 seconds lap time prediction
+- **MAE**: ~0.4-0.6 seconds average error
+- **R²**: 0.95-0.99 correlation with actual lap times
 
 ### Strategy Optimization
 - **Generation Speed**: 2000+ strategies in 30-60 seconds
@@ -213,7 +213,7 @@ best_strategy, best_time, best_df, top_strategies = find_best_strategy(
 
 ### Run All Tests
 ```bash
-python utils/test.py
+python3 utils/test.py
 ```
 
 ### Test Categories
@@ -226,7 +226,7 @@ python utils/test.py
 ### Driver MSE Analysis
 ```bash
 # Calculate per-driver prediction accuracy
-python utils/test.py
+python3 utils/test.py
 ```
 
 ## 🚨 Troubleshooting
@@ -236,7 +236,7 @@ python utils/test.py
 1. **Model Loading Error**
    ```bash
    # Retrain the model
-   python lapprediction.py
+   python3 lapprediction.py
    ```
 
 2. **Data File Missing**
@@ -293,7 +293,7 @@ See `requirements.txt` for complete list:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+FastF1 is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🏎️ Acknowledgments
 
@@ -306,11 +306,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For issues and questions:
 1. Check the troubleshooting section
-2. Run the test suite (`python utils/test.py`)
+2. Run the test suite (`python3 utils/test.py`)
 3. Create an issue in the repository
 
 ---
-
-**Built with ❤️ for F1 strategy enthusiasts and data scientists**
 
 *"In F1, the perfect strategy doesn't exist, but with data science, we can get pretty close."*
