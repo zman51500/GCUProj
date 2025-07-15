@@ -37,8 +37,8 @@ An advanced Formula 1 tire strategy optimization and race analysis platform buil
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
-cd GCUProj/V3
+git clone 'https://github.com/zman51500/GCUProj'
+cd Strat1
 ```
 
 2. **Install dependencies**
@@ -60,7 +60,8 @@ streamlit run Strat_Prediction.py
 ```
 
 2. **Access the application**
-   - Open your browser to `https://zman51500-gcuproj-strat1strat-prediction-bu8jhu.streamlit.app/`
+   - Open your browser to `http://localhost:8501/`
+   - Or open your browser to `https://zman51500-gcuproj-strat1strat-prediction-bu8jhu.streamlit.app/`
    - The main strategy prediction interface will load
 
 3. **Navigate between pages**
