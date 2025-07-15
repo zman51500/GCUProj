@@ -68,7 +68,10 @@ def initialize_session_state():
         "recommended_strategy": None,
         "num_stints": 2,
         "reset_stints": False,
-        "pit_stop_time": 22.0
+        "pit_stop_time": 22.0,
+        "is_optimizing": False,
+        "optimization_results": None,
+        "show_results": False
     }
     
     for key, value in defaults.items():
@@ -81,6 +84,8 @@ def handle_strategy_reset():
     if st.session_state.reset_stints:
         st.session_state.num_stints = 2
         st.session_state.recommended_strategy = None
+        st.session_state.optimization_results = None
+        st.session_state.show_results = False
         st.session_state.reset_stints = False
 
 
@@ -192,19 +197,39 @@ def run_strategy_optimization(model, config: Dict):
     # Create two columns for the buttons
     col1, col2 = st.columns([3, 1])
     
+    # Check if optimization is running
+    is_optimizing = st.session_state.get('is_optimizing', False)
+    
     with col1:
-        recommend_button = st.button("🔍 Recommend Optimal Strategy")
+        recommend_button = st.button(
+            "🔍 Recommend Optimal Strategy" if not is_optimizing else "⏳ Optimizing...",
+            disabled=is_optimizing,
+            help="Generate optimal tire strategy recommendations" if not is_optimizing else "Strategy optimization in progress..."
+        )
     
     with col2:
-        reset_button = st.button("🔄 Reset Strategy")
+        reset_button = st.button(
+            "🔄 Reset Strategy",
+            disabled=is_optimizing,
+            help="Reset strategy settings" if not is_optimizing else "Cannot reset while optimizing"
+        )
     
     # Handle reset button
-    if reset_button:
+    if reset_button and not is_optimizing:
         st.session_state.reset_stints = True
+        st.session_state.optimization_results = None
+        st.session_state.show_results = False
         st.rerun()
     
     # Handle recommend button
-    if recommend_button:
+    if recommend_button and not is_optimizing:
+        # Set optimization state to True
+        st.session_state.is_optimizing = True
+        st.session_state.show_results = False
+        st.rerun()
+    
+    # Run optimization if state indicates it should be running
+    if st.session_state.get('is_optimizing', False):
         with st.spinner("Optimizing strategy... this may take a few moments ⏳"):
             try:
                 best_strategy, best_time, best_df, top_strategies = find_best_strategy(
@@ -220,27 +245,55 @@ def run_strategy_optimization(model, config: Dict):
                     pit_stop_time=config['pit_stop_time']
                 )
                 
+                # Reset optimization state
+                st.session_state.is_optimizing = False
+                
                 if best_df is not None:
+                    # Store results in session state
+                    st.session_state.optimization_results = {
+                        'best_strategy': best_strategy,
+                        'best_time': best_time,
+                        'best_df': best_df,
+                        'top_strategies': top_strategies,
+                        'pit_stop_time': config['pit_stop_time']
+                    }
                     st.session_state.recommended_strategy = best_strategy
-                    
-                    # Calculate pit stop info for display
-                    num_pit_stops = len(best_strategy) - 1
-                    total_pit_penalty = num_pit_stops * config['pit_stop_time']
-                    
-                    st.success(f"🏆 Optimal strategy found! Total predicted time: {best_time:.2f} seconds")
-                    st.info(f"⏱️ Includes {num_pit_stops} pit stops @ {config['pit_stop_time']}s each = {total_pit_penalty:.1f}s penalty")
-                    
-                    # Display top strategies
-                    st.markdown("### 🥇 Top Strategies")
-                    for idx, (total_time, strategy, _) in enumerate(top_strategies, 1):
-                        stint_summary = ' → '.join([f"{compound}({length})" for compound, length in strategy])
-                        pit_stops = len(strategy) - 1
-                        st.markdown(f"**{idx}.** {stint_summary} — `{total_time:.2f}s` ({pit_stops} stops)")
+                    st.session_state.show_results = True
                 else:
-                    st.error("❌ No valid strategy found. Try adjusting race inputs.")
+                    st.session_state.optimization_results = None
+                    st.session_state.show_results = False
+                    
+                # Rerun to update button states and show results
+                st.rerun()
                     
             except Exception as e:
+                # Reset optimization state on error
+                st.session_state.is_optimizing = False
+                st.session_state.optimization_results = None
+                st.session_state.show_results = False
                 st.error(f"Error during optimization: {e}")
+                st.rerun()
+    
+    # Display results if available
+    if st.session_state.get('show_results', False) and st.session_state.get('optimization_results'):
+        results = st.session_state.optimization_results
+        
+        # Calculate pit stop info for display
+        num_pit_stops = len(results['best_strategy']) - 1
+        total_pit_penalty = num_pit_stops * results['pit_stop_time']
+        
+        st.success(f"🏆 Optimal strategy found! Total predicted time: {results['best_time']:.2f} seconds")
+        st.info(f"⏱️ Includes {num_pit_stops} pit stops @ {results['pit_stop_time']}s each = {total_pit_penalty:.1f}s penalty")
+        
+        # Display top strategies
+        st.markdown("### 🥇 Top Strategies")
+        for idx, (total_time, strategy, _) in enumerate(results['top_strategies'], 1):
+            stint_summary = ' → '.join([f"{compound}({length})" for compound, length in strategy])
+            pit_stops = len(strategy) - 1
+            st.markdown(f"**{idx}.** {stint_summary} — `{total_time:.2f}s` ({pit_stops} stops)")
+    
+    elif st.session_state.get('optimization_results') is None and st.session_state.get('show_results', False):
+        st.error("❌ No valid strategy found. Try adjusting race inputs.")
 
 
 def calculate_stint_distribution(total_laps: int, num_stints: int) -> tuple:
