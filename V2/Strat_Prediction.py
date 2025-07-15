@@ -138,7 +138,7 @@ for i in range(num_stints):
         default_end = total_laps
 
     if stint_start > total_laps:
-        st.warning(f"⚠️ Stint {i+1} starts after the total number of race laps. Reduce the number of stints.")
+        st.warning(f"⚠️ Stint {i+1} starts after the total number of race laps. Reduce the number of stints or laps on previous stint.")
         break
 
     start_lap = st.number_input(f"Start Lap (Stint {i+1})", value=stint_start, key=f'start_{i}', disabled=True)
