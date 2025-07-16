@@ -1,7 +1,7 @@
 """
-F1 Tire Strategy Recommendation Engine V3 - Simplified
+F1 Tire Strategy Recommendation Engine
 
-This module provides simplified functions to generate, evaluate, and optimize tire strategies
+This module provides functions to generate, evaluate, and optimize tire strategies
 for F1 races using a trained lap time prediction model with focus on prediction accuracy.
 """
 
