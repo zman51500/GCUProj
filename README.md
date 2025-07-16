@@ -79,7 +79,8 @@ Strat1/
 ├── pages/                       # Streamlit pages
 │   └── 1_2025_Race_Data.py     # Race analysis page
 └── utils/                       # Utility modules
-    ├── encoder.py               # Custom data encoders
+    ├── encoder.py            # Custom data encoders
+    ├── fastf1_data.py            # Generates and formats the data
     ├── f1_data.pkl             # F1 training data (generated)
     ├── lapprediction_model.joblib # Trained ML model (generated)
     └── test.py                  # Model testing and validation
