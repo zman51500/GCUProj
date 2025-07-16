@@ -2,7 +2,7 @@
 F1 Tire Strategy Recommendation Engine
 
 This module provides functions to generate, evaluate, and optimize tire strategies
-for F1 races using a trained lap time prediction model with focus on prediction accuracy.
+for F1 races using a trained lap time prediction model.
 """
 
 import pandas as pd

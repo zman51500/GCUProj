@@ -1,8 +1,7 @@
 """
-Enhanced F1 Lap Time Prediction Model V3
+F1 Lap Time Prediction Model V3
 
-This module builds and trains an advanced machine learning model to predict F1 lap times
-with improved feature engineering, model selection, and validation capabilities.
+This module builds and trains the machine learning model to predict F1 lap times.
 """
 
 import pickle
@@ -595,7 +594,7 @@ class EnhancedModelPipeline:
         # Cross-validation
         logger.info("Performing cross-validation...")
         try:
-            cv_scores = cross_val_score(model, X_train, y_train, cv=3,  # Reduced CV folds
+            cv_scores = cross_val_score(model, X_train, y_train, cv=3,  
                                       scoring='neg_mean_squared_error', n_jobs=-1)
             logger.info(f"CV RMSE: {np.sqrt(-cv_scores.mean()):.4f} (+/- {np.sqrt(cv_scores.std() * 2):.4f})")
         except Exception as e:
@@ -658,7 +657,7 @@ if __name__ == "__main__":
         try:
             model, metrics = pipeline.train_and_save_enhanced_model(
                 model_type=model_type,
-                optimize=(model_type == 'xgboost'),  # Only optimize XGBoost
+                optimize=(model_type == 'xgboost'),  #optimize XGBoost
                 save_path=f'utils/lapprediction_model_{model_type}.joblib'
             )
             results[model_type] = metrics
